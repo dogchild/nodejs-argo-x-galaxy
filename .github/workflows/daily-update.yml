@@ -1,0 +1,38 @@
+name: Daily README Update
+
+on:
+  schedule:
+    # 23:00 UTC = 07:00 Beijing Time (UTC+8)
+    - cron: '0 23 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Beijing Time
+        id: time
+        run: |
+          # Set timezone to Asia/Shanghai
+          TZ='Asia/Shanghai'
+          # Get current time in specified format
+          CURRENT_TIME=$(date +'%Y-%m-%d %H:%M:%S')
+          echo "TIMESTAMP=$CURRENT_TIME" >> $GITHUB_ENV
+
+      - name: Update README.md
+        run: |
+          echo "Last Updated: ${{ env.TIMESTAMP }}" > README.md
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add README.md
+          git commit -m "docs: automatic daily update [${{ env.TIMESTAMP }}]"
+          git push
