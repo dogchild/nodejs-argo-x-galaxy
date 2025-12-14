@@ -47,8 +47,16 @@ let subContent = '';
 const http = require('http');
 const server = http.createServer((req, res) => {
   if (req.method === 'GET' && req.url === '/') {
-    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end('Hello world!');
+    const htmlPath = path.join(__dirname, 'index.html');
+    fs.readFile(htmlPath, 'utf8', (err, data) => {
+      if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('Internal Server Error');
+      } else {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(data);
+      }
+    });
   } else if (req.method === 'GET' && req.url === `/${S_PATH}`) {
     res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
     res.end(subContent);
