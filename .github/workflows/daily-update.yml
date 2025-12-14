@@ -19,10 +19,7 @@ jobs:
       - name: Get Beijing Time
         id: time
         run: |
-          # Set timezone to Asia/Shanghai
-          TZ='Asia/Shanghai'
-          # Get current time in specified format
-          CURRENT_TIME=$(date +'%Y-%m-%d %H:%M:%S')
+          CURRENT_TIME=$(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M:%S')
           echo "TIMESTAMP=$CURRENT_TIME" >> $GITHUB_ENV
 
       - name: Update README.md
